@@ -4,7 +4,7 @@ from itertools import chain
 import logging
 import re
 
-from .base.constants import DEFAULTS_CHANNEL_NAME, MAX_CHANNEL_PRIORITY
+from .base.constants import DEFAULTS_CHANNEL_NAME, MAX_CHANNEL_PRIORITY, CONDA_TARBALL_EXTENSIONS
 from .base.context import context
 from .common.compat import iteritems, iterkeys, itervalues, string_types
 from .console import setup_handlers
@@ -542,8 +542,20 @@ class Resolve(object):
         ver = normalized_version(rec.get('version', ''))
         bld = rec.get('build_number', 0)
         bs = rec.get('build_string')
-        return ((valid, -cpri, ver, bld, bs) if context.channel_priority else
-                (valid, ver, -cpri, bld, bs))
+        # prefer .tar.xz over .tar.bz2
+        # TODO: Should this be a custom rule instead of intermingled
+        # with the version key?
+        try:
+            ext = 1 + CONDA_TARBALL_EXTENSIONS.index(dist.dist_ext)
+        except ValueError:
+            ext = 0
+        if dist.channel == 'file://home/armin/devel/conda-build/test-index':
+            print(dist, ext)
+        #print([(dist, ext) for dist in self.index if dist.channel == 'file://home/armin/devel/conda-build/test-index'])
+        #xz = 1 if dist.endswith('.tar.xz') else 0
+
+        return ((valid, -cpri, ver, bld, bs, -ext) if context.channel_priority else
+                (valid, ver, -cpri, bld, bs, -ext))
 
     def features(self, dist):
         return set(self.index[dist].get('features', '').split())
@@ -672,7 +684,7 @@ class Resolve(object):
                 elif any(pk != vk for pk, vk in zip(pkey[:3], version_key[:3])):
                     iv += 1
                     ib = 0
-                elif pkey[3] != version_key[3]:
+                elif pkey[3:] != version_key[3:]:
                     ib += 1
 
                 if iv or include0:
@@ -958,6 +970,7 @@ class Resolve(object):
                 return sol.split('[')[0]
             stdoutlog.info('\n')
 
+            print(psolutions)
             if returnall:
                 return [sorted(Dist(stripfeat(dname)) for dname in psol) for psol in psolutions]
             else:

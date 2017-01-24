@@ -497,6 +497,7 @@ def install_actions_list(prefix, index, specs, force=False, only_names=None, alw
     specs = [MatchSpec(spec) for spec in specs]
     r = get_resolve_object(index.copy(), prefix)
 
+    print(context.root_prefix)
     linked_in_root = linked_data(context.root_prefix)
 
     dists_for_envs = determine_all_envs(r, specs, channel_priority_map=channel_priority_map)

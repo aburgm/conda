@@ -60,9 +60,9 @@ def load_linked_data(prefix, dist_name, rec=None, ignore_channels=False):
     rec['link'] = rec.get('link') or EMPTY_LINK
 
     if ignore_channels:
-        dist = Dist.from_string(dist_name)
+        dist = Dist.from_string(fn)
     else:
-        dist = Dist.from_string(dist_name, channel_override=schannel)
+        dist = Dist.from_string(fn, channel_override=schannel)
     linked_data_[prefix][dist] = rec = IndexRecord(**rec)
 
     return rec

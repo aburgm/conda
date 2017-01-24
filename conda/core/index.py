@@ -467,6 +467,10 @@ def fetch_index(channel_urls, use_cache=False, index=None):
                                                priority=priority,
                                                url=join_url(channel_url, fn),
                                                auth=channel.auth)
+
+                # TODO: if we wan't to hide different file extensions from the solver
+                # then remove dist_ext completely from Dist(?)
+
                 result[Dist(rec)] = rec
         return result
 

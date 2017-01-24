@@ -83,7 +83,10 @@ ROOT_NO_RM = (
 # Maximum priority, reserved for packages we really want to remove
 MAX_CHANNEL_PRIORITY = 10000
 
-CONDA_TARBALL_EXTENSION = '.tar.bz2'
+CONDA_TARBALL_EXTENSION = '.tar.bz2'  # TODO: remove or rename to _DEFAULT_EXT
+
+# Order defines priority if an index contains both
+CONDA_TARBALL_EXTENSIONS = ['.tar.xz', '.tar.bz2']
 
 UNKNOWN_CHANNEL = "<unknown>"
 
